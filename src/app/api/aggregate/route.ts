@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { aggregateAllSources, deduplicateAndRank } from "@/lib/aggregator";
-import { rewriteArticle, generateOriginalArticle } from "@/lib/ai/gemini";
+import { rewriteArticle } from "@/lib/ai/gemini";
 import { insertArticle } from "@/lib/db/queries";
 import { isDuplicate } from "@/lib/utils/deduplicate";
 import { slugify } from "@/lib/utils/slugify";
-import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/queries";
 import { articles } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
 
 export const maxDuration = 120;
 export const dynamic = "force-dynamic";
@@ -25,6 +23,19 @@ async function getExistingTitles(): Promise<string[]> {
   }
 }
 
+async function tryAiRewrite(
+  title: string,
+  content: string,
+  sourceName: string
+): Promise<{ title: string; content: string; excerpt: string } | null> {
+  try {
+    return await rewriteArticle(title, content, sourceName);
+  } catch (err) {
+    console.warn("[Aggregate] AI rewrite failed, using raw content:", String(err).slice(0, 100));
+    return null;
+  }
+}
+
 export async function GET() {
   try {
     console.log("[Aggregate API] Starting aggregation...");
@@ -33,7 +44,8 @@ export async function GET() {
     const ranked = deduplicateAndRank(rawItems);
     const existingTitles = await getExistingTitles();
 
-    let newCount = 0;
+    let aiCount = 0;
+    let rawCount = 0;
     let skipCount = 0;
 
     for (const item of ranked.slice(0, 15)) {
@@ -43,33 +55,46 @@ export async function GET() {
       }
 
       try {
-        const rewritten = await rewriteArticle(
+        const rewritten = await tryAiRewrite(
           item.title,
           item.content,
           item.sourceName
         );
 
-        const articleSlug = slugify(rewritten.title);
+        const finalTitle = rewritten?.title || item.title;
+        const finalContent = rewritten?.content || `<p>${item.content}</p>`;
+        const finalExcerpt = rewritten?.excerpt || item.excerpt.slice(0, 200);
+        const articleSlug = slugify(finalTitle);
+
+        const tags = [
+          item.sourceName.toLowerCase().replace(/[^a-z0-9]/g, ""),
+          item.category,
+        ].filter(Boolean);
 
         await insertArticle({
-          title: rewritten.title,
+          title: finalTitle,
           slug: articleSlug,
-          excerpt: rewritten.excerpt,
-          content: rewritten.content,
+          excerpt: finalExcerpt,
+          content: finalContent,
           imageUrl: item.imageUrl,
           sourceName: item.sourceName,
           sourceUrl: item.url,
           category: item.category,
-          tags: [item.sourceName.toLowerCase()],
-          isPublished: false,
-          isAiGenerated: true,
+          tags: tags,
+          isPublished: true,
+          isAiGenerated: !!rewritten,
+          publishedAt: new Date(),
         });
 
-        existingTitles.push(rewritten.title);
-        newCount++;
-        console.log(`[Aggregate] Processed: ${rewritten.title.slice(0, 60)}...`);
+        existingTitles.push(finalTitle);
+        if (rewritten) {
+          aiCount++;
+        } else {
+          rawCount++;
+        }
+        console.log(`[Aggregate] Published: ${finalTitle.slice(0, 60)}...`);
       } catch (err) {
-        console.error(`[Aggregate] Failed to process "${item.title}":`, err);
+        console.error(`[Aggregate] Failed:`, err);
         skipCount++;
       }
     }
@@ -78,7 +103,8 @@ export async function GET() {
       success: true,
       fetched: rawItems.length,
       deduped: ranked.length,
-      published: newCount,
+      aiPublished: aiCount,
+      rawPublished: rawCount,
       skipped: skipCount,
     });
   } catch (error) {
