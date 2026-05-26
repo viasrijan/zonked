@@ -3,6 +3,8 @@ import { searchArticles } from "@/lib/db/queries";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { SearchBar } from "@/components/shared/SearchBar";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Search",
   description: "Search articles on Zonked",

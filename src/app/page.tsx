@@ -4,6 +4,8 @@ import { ArticleCard } from "@/components/articles/ArticleCard";
 import { TrendingSidebar } from "@/components/articles/TrendingSidebar";
 import { CategorySection } from "@/components/articles/CategorySection";
 
+export const revalidate = 60;
+
 const CATEGORIES = [
   { name: "Bollywood", slug: "bollywood" },
   { name: "Television", slug: "television" },

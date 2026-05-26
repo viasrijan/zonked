@@ -1,7 +1,10 @@
 import { Metadata } from "next";
 import { getArticlesByCategory, getTrendingArticles } from "@/lib/db/queries";
+
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { TrendingSidebar } from "@/components/articles/TrendingSidebar";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Fashion",
