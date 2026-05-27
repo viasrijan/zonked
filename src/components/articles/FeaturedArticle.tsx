@@ -30,7 +30,7 @@ export function FeaturedArticle({
             alt={title}
             className="h-full w-full"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
           <Badge className="mb-2 bg-red-600 text-white hover:bg-red-600">
