@@ -14,14 +14,6 @@ interface TrendingSidebarProps {
   title?: string;
 }
 
-const rankColors = [
-  "text-red-600 dark:text-red-400",
-  "text-orange-600 dark:text-orange-400",
-  "text-amber-600 dark:text-amber-400",
-  "text-yellow-600 dark:text-yellow-400",
-  "text-lime-600 dark:text-lime-400",
-];
-
 export function TrendingSidebar({
   articles,
   title = "Trending Now",
@@ -47,7 +39,6 @@ export function TrendingSidebar({
               category={article.category}
               publishedAt={article.publishedAt}
               variant="compact"
-              titleClassName={rankColors[i]}
             />
           </div>
         ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Menu, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,14 +22,6 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const searchRef = useRef<HTMLDivElement>(null);
-  const [searchHeight, setSearchHeight] = useState(0);
-
-  useEffect(() => {
-    if (searchRef.current) {
-      setSearchHeight(searchRef.current.scrollHeight);
-    }
-  }, [searchOpen]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +34,7 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl font-bold tracking-tight text-white">
+          <span className="text-2xl font-bold tracking-tight text-red-600">
             Zonked
           </span>
         </Link>
@@ -67,7 +59,7 @@ export function Header() {
             onClick={() => setSearchOpen(!searchOpen)}
             aria-label="Search"
           >
-            {searchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
+            <Search className="h-5 w-5" />
           </Button>
           <Button
             variant="ghost"
@@ -81,12 +73,8 @@ export function Header() {
         </div>
       </div>
 
-      <div
-        ref={searchRef}
-        className="overflow-hidden border-t border-zinc-200 transition-all duration-300 ease-in-out dark:border-zinc-800"
-        style={{ maxHeight: searchOpen ? searchHeight : 0 }}
-      >
-        <div className="px-4 py-3">
+      {searchOpen && (
+        <div className="border-t border-zinc-200 px-4 py-3 dark:border-zinc-800">
           <form onSubmit={handleSearch} className="mx-auto flex max-w-2xl gap-2">
             <Input
               type="search"
@@ -98,7 +86,7 @@ export function Header() {
             <Button type="submit">Search</Button>
           </form>
         </div>
-      </div>
+      )}
 
       {mobileMenuOpen && (
         <div className="border-t border-zinc-200 px-4 py-4 md:hidden dark:border-zinc-800">

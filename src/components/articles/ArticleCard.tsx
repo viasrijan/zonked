@@ -12,7 +12,6 @@ interface ArticleCardProps {
   category: string;
   publishedAt: Date | string | null;
   variant?: "default" | "compact";
-  titleClassName?: string;
 }
 
 const categoryColors: Record<string, string> = {
@@ -33,7 +32,6 @@ export function ArticleCard({
   category,
   publishedAt,
   variant = "default",
-  titleClassName,
 }: ArticleCardProps) {
   if (variant === "compact") {
     return (
@@ -46,7 +44,7 @@ export function ArticleCard({
           />
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className={cn("line-clamp-2 text-sm font-medium leading-snug text-zinc-900 group-hover:text-red-600 dark:text-zinc-100", titleClassName)}>
+          <h3 className="line-clamp-2 text-sm font-medium leading-snug text-zinc-900 group-hover:text-red-600 dark:text-zinc-100">
             {title}
           </h3>
           {publishedAt && (
@@ -77,7 +75,7 @@ export function ArticleCard({
           >
             {category.charAt(0).toUpperCase() + category.slice(1).replace("-", " ")}
           </Badge>
-          <h2 className={cn("line-clamp-2 text-base font-semibold leading-snug text-zinc-900 group-hover:text-red-600 dark:text-zinc-100", titleClassName)}>
+          <h2 className="line-clamp-2 text-base font-semibold leading-snug text-zinc-900 group-hover:text-red-600 dark:text-zinc-100">
             {title}
           </h2>
           {excerpt && (
