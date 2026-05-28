@@ -7,7 +7,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Search",
-  description: "Search articles on Zonked",
+  description: "Search articles on ZONKED",
 };
 
 interface Props {
@@ -19,19 +19,21 @@ export default async function SearchPage({ searchParams }: Props) {
   const results = q ? await searchArticles(q) : [];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold text-zinc-900 dark:text-white">
-        Search Articles
-      </h1>
-      <SearchBar className="mb-8" />
+    <div className="mx-auto max-w-[1200px] px-4 py-8">
+      <div className="mb-8 border-b border-gray-200 pb-6">
+        <h1 className="text-4xl font-black tracking-[-0.03em] text-gray-900">
+          Search
+        </h1>
+        <SearchBar className="mt-4" />
+      </div>
       {q && (
-        <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+        <p className="mb-6 text-lg text-gray-400">
           {results.length > 0
             ? `Found ${results.length} result${results.length === 1 ? "" : "s"} for "${q}"`
             : `No results for "${q}"`}
         </p>
       )}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {results.map((article) => (
           <ArticleCard
             key={article.slug}

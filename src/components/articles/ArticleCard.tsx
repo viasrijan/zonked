@@ -1,8 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { ImageWithFallback } from "@/components/shared/ImageWithFallback";
 import { timeAgo } from "@/lib/utils/date";
-import { cn } from "@/lib/utils/cn";
 
 interface ArticleCardProps {
   title: string;
@@ -12,16 +13,21 @@ interface ArticleCardProps {
   category: string;
   publishedAt: Date | string | null;
   variant?: "default" | "compact";
+  aspectRatio?: "16:9" | "1:1" | "4:3" | "3:2";
 }
 
-const categoryColors: Record<string, string> = {
-  bollywood: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  television: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  "south-cinema": "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-  hollywood: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  korean: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400",
-  fashion: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  lifestyle: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+function formatCategoryLabel(category: string): string {
+  return category.charAt(0).toUpperCase() + category.slice(1).replace("-", " ");
+}
+
+const CAT_COLORS: Record<string, string> = {
+  film: "#E01A4F",
+  tv: "#F9C22E",
+  celebs: "#53B3CB",
+  fashion: "#06D6A0",
+  lifestyle: "#C0C0C0",
+  dating: "#F15946",
+  internet: "#8B5CF6",
 };
 
 export function ArticleCard({
@@ -32,23 +38,33 @@ export function ArticleCard({
   category,
   publishedAt,
   variant = "default",
+  aspectRatio = "16:9",
 }: ArticleCardProps) {
+  const aspectClass =
+    aspectRatio === "1:1" ? "aspect-square"
+      : aspectRatio === "4:3" ? "aspect-[4/3]"
+        : aspectRatio === "3:2" ? "aspect-[3/2]"
+          : "aspect-video";
+
+  const hoverColor = CAT_COLORS[category] || "#E01A4F";
+
   if (variant === "compact") {
     return (
-      <Link href={`/article/${slug}`} className="group flex gap-3 rounded-lg p-2 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg">
-          <ImageWithFallback
-            src={imageUrl}
-            alt={title}
-            className="h-full w-full"
-          />
+      <Link href={`/article/${slug}`} className="group flex gap-3">
+        <div className={`relative h-16 w-16 shrink-0 overflow-hidden ${aspectClass}`}>
+          <ImageWithFallback src={imageUrl} alt={title} className="h-full w-full" />
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="line-clamp-2 text-sm font-medium leading-snug text-zinc-900 group-hover:text-red-600 dark:text-zinc-100">
-            {title}
+          <h3
+            className="line-clamp-2 text-base font-bold leading-snug text-gray-900 transition-colors duration-200"
+            style={{ ["--hover" as string]: hoverColor }}
+          >
+            <span className="group-hover:text-[var(--hover)]">{title}</span>
           </h3>
           {publishedAt && (
-            <p className="mt-1 text-xs text-zinc-500">{timeAgo(publishedAt)}</p>
+            <p className="mt-0.5 text-xs text-gray-500">
+              {timeAgo(publishedAt)}
+            </p>
           )}
         </div>
       </Link>
@@ -56,35 +72,34 @@ export function ArticleCard({
   }
 
   return (
-    <Link href={`/article/${slug}`} className="group block">
-      <article className="overflow-hidden rounded-xl border border-zinc-200 bg-white transition-all hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
-        <div className="relative aspect-[16/9] overflow-hidden">
+    <Link href={`/article/${slug}`} className="group editorial-card block">
+      <article className="white-card overflow-hidden">
+        <div className={`relative overflow-hidden ${aspectClass}`}>
           <ImageWithFallback
             src={imageUrl}
             alt={title}
-            className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full"
           />
         </div>
-        <div className="p-4">
-          <Badge
-            variant="outline"
-            className={cn(
-              "mb-2 border-0",
-              categoryColors[category] || "bg-zinc-100 text-zinc-700"
-            )}
-          >
-            {category.charAt(0).toUpperCase() + category.slice(1).replace("-", " ")}
+        <div className="p-5">
+          <Badge colorScheme={category} className="mb-2">
+            {formatCategoryLabel(category)}
           </Badge>
-          <h2 className="line-clamp-2 text-base font-semibold leading-snug text-zinc-900 group-hover:text-red-600 dark:text-zinc-100">
-            {title}
+          <h2
+            className="line-clamp-2 text-lg font-bold leading-snug text-gray-900 transition-colors duration-200"
+            style={{ ["--hover" as string]: hoverColor }}
+          >
+            <span className="group-hover:text-[var(--hover)]">{title}</span>
           </h2>
           {excerpt && (
-            <p className="mt-2 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mt-2 line-clamp-2 text-base leading-relaxed text-gray-600">
               {excerpt}
             </p>
           )}
           {publishedAt && (
-            <p className="mt-3 text-xs text-zinc-500">{timeAgo(publishedAt)}</p>
+            <p className="mt-3 text-sm font-medium text-gray-400">
+              {timeAgo(publishedAt)}
+            </p>
           )}
         </div>
       </article>

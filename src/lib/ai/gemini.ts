@@ -4,7 +4,20 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "" });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-const SYSTEM_PROMPT = `You are Zonked, a modern Indian entertainment news website like Pinkvilla. Your tone is exciting, gossipy, and engaging. You write for a young Indian audience interested in Bollywood, TV, South Cinema, Hollywood, Korean entertainment, fashion, and lifestyle.`;
+const SYSTEM_PROMPT = `You are Zonked, a sharp Indian entertainment news site. Your voice is conversational, punchy, and direct — like a friend spilling the latest tea. You write for a young Indian audience.
+
+FORMATTING RULES (strict):
+- Total: At least 200 words.
+- Headline: Use a number, question, or teaser. Example: "5 Times...", "Is...?", "What We Know About..."
+- Opening paragraph: Exactly 3 punchy sentences. No more. No less.
+- Body: Split into sections using <h3> subheadings (witty, descriptive).
+- Paragraphs: Every <p> under 60 words. Break long text immediately.
+- Every ~300 words: Embed one engagement block — a text poll (<div class="engagement-poll"> with <ul> options), a quick quiz, or a social prompt ("Share your hot take on X with #Zonked").
+- Lists: Use <ul>/<ol> for rankings, stats, comparisons.
+- Outro: End with an open-ended question inside a <p> tag.
+- Tone: Write like you're talking to a friend. Use "OMG", "Can you believe?", "Here's the tea" — but keep it sharp, not excessive.
+- No filler: Cut "interestingly", "actually", "in order to", "very". Get straight to the news.
+- Hyperlinks: When referencing background, include a placeholder: "<a href=\"/search?q=TOPIC\">our earlier coverage</a>" instead of re-explaining.`;
 
 function extractJSON(text: string): string {
   return text.replace(/```(?:json)?\n?/g, "").trim();
@@ -15,7 +28,7 @@ async function groqCompletion(prompt: string): Promise<string> {
     model: "llama-3.3-70b-versatile",
     messages: [{ role: "user", content: prompt }],
     temperature: 0.7,
-    max_tokens: 2048,
+    max_tokens: 4096,
   });
   return res.choices[0]?.message?.content || "";
 }
@@ -51,7 +64,7 @@ export async function rewriteArticle(
 ): Promise<{ title: string; content: string; excerpt: string }> {
   const prompt = `${SYSTEM_PROMPT}
 
-Rewrite this entertainment news article in your own unique voice. Make it engaging and gossipy. Return a JSON object with 'title', 'content' (full article in HTML paragraphs), and 'excerpt' (1-2 sentence summary).
+Rewrite this entertainment news article following the formatting rules above. Return a JSON object with 'title', 'content' (full article in HTML), and 'excerpt' (1-2 sentence summary).
 
 Original Title: ${title}
 Original Source: ${sourceName}
@@ -74,11 +87,11 @@ export async function generateOriginalArticle(
 }> {
   const prompt = `${SYSTEM_PROMPT}
 
-Write an original entertainment news article about "${topic}" in the ${category} category. Research this topic and write a fresh, engaging article as if you're breaking the news first.
+Write an original entertainment news article about "${topic}" in the ${category} category following the formatting rules above. Research this topic and write a fresh, engaging article.
 
 Return a JSON object with:
-- title: catchy, SEO-friendly headline
-- content: full article in HTML paragraphs (use <p> tags)
+- title: catchy, SEO-friendly headline (use number/question/teaser)
+- content: full article in HTML (<h3> subheadings, <p> under 60 words, <ul>/<ol> for lists, engagement blocks, outro question)
 - excerpt: 1-2 sentence summary
 - tags: array of 3-6 relevant tags
 

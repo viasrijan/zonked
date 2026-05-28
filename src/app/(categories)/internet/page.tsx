@@ -6,8 +6,8 @@ import { TrendingSidebar } from "@/components/articles/TrendingSidebar";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Fashion",
-  description: "Celebrity fashion, red carpet looks, style trends.",
+  title: "Internet",
+  description: "Viral trends, social media, and digital culture.",
 };
 
 export default async function CategoryPage() {
@@ -16,7 +16,7 @@ export default async function CategoryPage() {
     getTrendingArticles(5),
   ]);
 
-  const articles = allArticles.filter((a: any) => a.category === "fashion");
+  const articles = allArticles.filter((a: any) => a.category === "internet");
 
   const mapArticle = (a: any) => ({
     title: a.title, slug: a.slug, excerpt: a.excerpt,
@@ -26,10 +26,10 @@ export default async function CategoryPage() {
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-8">
       <div className="mb-8 border-b border-gray-200 pb-6">
-        <h1 className="text-5xl font-black tracking-[-0.03em] md:text-6xl" style={{ color: "#06D6A0" }}>
-          Fashion
+        <h1 className="text-5xl font-black tracking-[-0.03em] md:text-6xl" style={{ color: "#8B5CF6" }}>
+          Internet
         </h1>
-        <p className="mt-2 text-lg text-gray-500">Celebrity fashion, red carpet looks, style trends.</p>
+        <p className="mt-2 text-lg text-gray-500">Viral trends, social media, and digital culture.</p>
       </div>
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         <div className="grid gap-5 sm:grid-cols-2">

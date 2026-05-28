@@ -1,39 +1,33 @@
 import Link from "next/link";
 
+function getCurrentDate() {
+  return new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export function Footer() {
   return (
-    <footer className="border-t border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
-      <div className="mx-auto max-w-7xl px-4 py-12">
-        <div className="grid gap-8 md:grid-cols-3">
-          <div>
-            <Link href="/" className="text-xl font-bold text-red-600">
-              Zonked
+    <footer className="mt-12 bg-black shadow-[0_-4px_12px_-2px_rgba(0,0,0,0.3)]">
+      <div className="mx-auto max-w-[1200px] px-4 py-8">
+        <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+          <div className="text-center md:text-left">
+            <Link href="/" className="text-3xl font-black tracking-[-0.03em] text-white">
+              ZONKED
             </Link>
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              Your daily dose of Indian entertainment news, gossip, and celebrity updates.
+            <p className="mt-1 text-sm text-gray-400">
+              {getCurrentDate()}
             </p>
           </div>
-          <div>
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500">Categories</h3>
-            <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
-              <li><Link href="/bollywood" className="hover:text-zinc-900 dark:hover:text-white">Bollywood</Link></li>
-              <li><Link href="/television" className="hover:text-zinc-900 dark:hover:text-white">Television</Link></li>
-              <li><Link href="/south-cinema" className="hover:text-zinc-900 dark:hover:text-white">South Cinema</Link></li>
-              <li><Link href="/hollywood" className="hover:text-zinc-900 dark:hover:text-white">Hollywood</Link></li>
-              <li><Link href="/korean" className="hover:text-zinc-900 dark:hover:text-white">Korean</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500">More</h3>
-            <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
-              <li><Link href="/fashion" className="hover:text-zinc-900 dark:hover:text-white">Fashion</Link></li>
-              <li><Link href="/lifestyle" className="hover:text-zinc-900 dark:hover:text-white">Lifestyle</Link></li>
-              <li><Link href="/search" className="hover:text-zinc-900 dark:hover:text-white">Search</Link></li>
-            </ul>
-          </div>
+          <p className="text-xs text-gray-500">
+            Content is AI-curated from various sources.
+          </p>
         </div>
-        <div className="mt-8 border-t border-zinc-200 pt-8 text-center text-xs text-zinc-500 dark:border-zinc-800">
-          &copy; {new Date().getFullYear()} Zonked. All rights reserved. Content is AI-curated from various sources.
+        <div className="mt-6 border-t border-white/10 pt-4 text-center text-xs text-gray-500">
+          &copy; {new Date().getFullYear()} ZONKED
         </div>
       </div>
     </footer>

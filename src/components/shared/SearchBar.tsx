@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
 
 export function SearchBar({ className }: { className?: string }) {
   const [query, setQuery] = useState("");
@@ -18,15 +17,21 @@ export function SearchBar({ className }: { className?: string }) {
 
   return (
     <form onSubmit={handleSubmit} className={className}>
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-        <Input
+      <div className="relative flex items-center">
+        <Search className="absolute left-4 h-5 w-5 text-gray-400" />
+        <input
           type="search"
-          placeholder="Search Zonked..."
+          placeholder="Search ZONKED..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-10"
+          className="w-full bg-white border border-gray-200 py-3 pl-12 pr-28 text-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#E01A4F] focus:ring-2 focus:ring-[#E01A4F]/20"
         />
+        <button
+          type="submit"
+          className="absolute right-2 bg-[#E01A4F] px-6 py-2 text-sm font-bold text-white hover:bg-[#c0153f] transition-colors"
+        >
+          Search
+        </button>
       </div>
     </form>
   );

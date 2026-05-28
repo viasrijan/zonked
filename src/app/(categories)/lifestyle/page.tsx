@@ -1,6 +1,5 @@
 import { Metadata } from "next";
-import { getArticlesByCategory, getTrendingArticles } from "@/lib/db/queries";
-
+import { getPublishedArticles, getTrendingArticles } from "@/lib/db/queries";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { TrendingSidebar } from "@/components/articles/TrendingSidebar";
 
@@ -8,50 +7,43 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Lifestyle",
-  description: "Latest lifestyle tips, health, wellness, food, travel and relationship advice.",
+  description: "Celebrity lifestyle, wellness, personal stories.",
 };
 
-export default async function LifestylePage() {
-  const [articles, trending] = await Promise.all([
-    getArticlesByCategory("lifestyle", 30),
+export default async function CategoryPage() {
+  const [allArticles, trending] = await Promise.all([
+    getPublishedArticles(50),
     getTrendingArticles(5),
   ]);
 
+  const articles = allArticles.filter((a: any) => a.category === "lifestyle");
+
+  const mapArticle = (a: any) => ({
+    title: a.title, slug: a.slug, excerpt: a.excerpt,
+    imageUrl: a.imageUrl || a.imageBlobUrl, category: a.category, publishedAt: a.publishedAt,
+  });
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold text-zinc-900 dark:text-white">
-        Lifestyle
-      </h1>
+    <div className="mx-auto max-w-[1200px] px-4 py-8">
+      <div className="mb-8 border-b border-gray-200 pb-6">
+        <h1 className="text-5xl font-black tracking-[-0.03em] md:text-6xl" style={{ color: "#AEAEA2" }}>
+          Lifestyle
+        </h1>
+        <p className="mt-2 text-lg text-gray-500">Celebrity lifestyle, wellness, personal stories.</p>
+      </div>
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-        <div className="grid gap-4 sm:grid-cols-2">
-          {articles.map((article) => (
-            <ArticleCard
-              key={article.slug}
-              title={article.title}
-              slug={article.slug}
-              excerpt={article.excerpt}
-              imageUrl={article.imageUrl || article.imageBlobUrl}
-              category={article.category}
-              publishedAt={article.publishedAt}
-            />
+        <div className="grid gap-5 sm:grid-cols-2">
+          {articles.map((article: any) => (
+            <ArticleCard key={article.slug} {...mapArticle(article)} aspectRatio="16:9" />
           ))}
           {articles.length === 0 && (
-            <p className="col-span-full py-12 text-center text-zinc-500">
-              No articles yet. Content aggregation is running...
+            <p className="col-span-full py-12 text-center text-gray-500 text-lg">
+              No articles in this category yet.
             </p>
           )}
         </div>
         <aside className="hidden lg:block">
-          <TrendingSidebar
-            articles={trending.map((a) => ({
-              title: a.title,
-              slug: a.slug,
-              excerpt: a.excerpt,
-              imageUrl: a.imageUrl || a.imageBlobUrl,
-              category: a.category,
-              publishedAt: a.publishedAt,
-            }))}
-          />
+          <TrendingSidebar articles={trending.map(mapArticle)} />
         </aside>
       </div>
     </div>

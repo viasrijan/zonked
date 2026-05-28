@@ -8,22 +8,22 @@ export const RSS_SOURCES: RSSSource[] = [
   {
     name: "Pinkvilla",
     url: "https://www.pinkvilla.com/rss.xml",
-    category: "entertainment",
+    category: "bollywood",
   },
   {
     name: "Koimoi",
     url: "https://www.koimoi.com/feed/",
-    category: "entertainment",
+    category: "bollywood",
   },
   {
     name: "Filmfare",
     url: "https://www.filmfare.com/feed",
-    category: "entertainment",
+    category: "bollywood",
   },
   {
     name: "Bollywood Hungama",
     url: "https://www.bollywoodhungama.com/feed/",
-    category: "entertainment",
+    category: "bollywood",
   },
   {
     name: "Hindustan Times Bollywood",
@@ -33,28 +33,28 @@ export const RSS_SOURCES: RSSSource[] = [
   {
     name: "NDTV Entertainment",
     url: "https://www.ndtv.com/rss/entertainment",
-    category: "entertainment",
+    category: "bollywood",
   },
   {
     name: "India Today Entertainment",
     url: "https://www.indiatoday.in/rss/entertainment",
-    category: "entertainment",
+    category: "bollywood",
   },
   {
     name: "Times of India Entertainment",
     url: "https://timesofindia.indiatimes.com/rssfeeds/1081479906.cms",
-    category: "entertainment",
+    category: "bollywood",
   },
 ];
 
-export const GOOGLE_NEWS_QUERIES = [
-  "Bollywood",
-  "Indian celebrities",
-  "Bollywood gossip",
-  "K-pop India",
-  "Indian TV shows",
-  "South Indian cinema",
-  "Bollywood fashion",
+export const GOOGLE_NEWS_CATEGORIES: { query: string; category: string }[] = [
+  { query: "Bollywood", category: "bollywood" },
+  { query: "Indian celebrities", category: "bollywood" },
+  { query: "Bollywood gossip", category: "bollywood" },
+  { query: "K-pop India", category: "korean" },
+  { query: "Indian TV shows", category: "television" },
+  { query: "South Indian cinema", category: "south-cinema" },
+  { query: "Bollywood fashion", category: "fashion" },
 ];
 
 export const REDDIT_SUBREDDITS = [

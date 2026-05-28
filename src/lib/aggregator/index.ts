@@ -1,7 +1,7 @@
 import { fetchAllRSSFeeds, fetchRSSFeed, FeedItem } from "./rss-parser";
 import { fetchAllRedditPosts, RedditPost } from "./reddit";
 import { fetchAllGoogleNews, GoogleNewsItem } from "./google-news";
-import { RSS_SOURCES, GOOGLE_NEWS_QUERIES, REDDIT_SUBREDDITS } from "./sources";
+import { RSS_SOURCES, GOOGLE_NEWS_CATEGORIES, REDDIT_SUBREDDITS } from "./sources";
 import { isDuplicate } from "../utils/deduplicate";
 
 export interface AggregatedItem {
@@ -19,7 +19,7 @@ export async function aggregateAllSources(): Promise<AggregatedItem[]> {
   const [rssItems, redditItems, googleNewsItems] = await Promise.all([
     fetchAllRSSFeeds(RSS_SOURCES),
     fetchAllRedditPosts(REDDIT_SUBREDDITS),
-    fetchAllGoogleNews(GOOGLE_NEWS_QUERIES),
+    fetchAllGoogleNews(GOOGLE_NEWS_CATEGORIES),
   ]);
   return [...rssItems, ...redditItems, ...googleNewsItems];
 }

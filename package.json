@@ -17,6 +17,8 @@
     "run-all": "npx tsx scripts/aggregate.ts && npx tsx scripts/process-ai.ts && npx tsx scripts/publish.ts"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/playfair-display": "^5.2.8",
     "@google/generative-ai": "^0.24.1",
     "@neondatabase/serverless": "^1.1.0",
     "@vercel/blob": "^2.4.0",
